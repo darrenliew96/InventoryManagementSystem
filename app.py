@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, session, redirect
+from flask import Flask, request, render_template, session, redirect, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -9,6 +9,9 @@ from helpers import login_required
 db = SQLAlchemy()
 #Configure Flask App
 app=Flask(__name__)
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # Configure SQLALCHEMY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ims.db'
@@ -41,24 +44,12 @@ def hello_world():
 
 
 #From CS50 login method
-
 @app.route("/login", methods=["GET","POST"])
 def login():
 
     session.clear()
 
     if request.method == "POST":
-       if request.method == "POST":
-        # Ensure username was submitted
-        if not request.form.get("username"):
-            error = "Must Provide Username!"
-            return render_template("login.html", error = error)
-
-        # Ensure password was submitted
-        elif not request.form.get("password"):
-            error = "Must Provide Password!"
-            return render_template("login.html", error = error)
-
         # Query database for username
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", request.form.get("username")
@@ -80,3 +71,17 @@ def login():
     # if GET request, then show login page
     else:
         return render_template("login.html")
+    
+@app.route("/form_request", methods=["POST"])
+def form_request():
+    # Ensure username was submitted
+    if not request.form.get("username"):
+        error_message = "Must Provide Username!"
+        return jsonify({'error': error_message})
+
+    # Ensure password was submitted
+    elif not request.form.get("password"):
+        error_message = "Must Provide Password!"
+        return jsonify({'error': error_message})
+
+    return jsonify({'success': True})
