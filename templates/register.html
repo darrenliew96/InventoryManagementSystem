@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div class="container top-pad">
+    <form id="register-form">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+                <button type="button" class="btn-close" id="modalErrorClose" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message">An error occurred.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to handle the login form and error modal
+    $(document).ready(function() {
+        $("#register-form").submit(function(event) {
+            event.preventDefault();
+            register();
+        });
+        $("#modalErrorClose").click(function(){
+            $("#errorModal").modal("hide");
+        });
+    });
+
+    function register() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var email = $("#email").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/form_request_register",
+            data: { "username": username, "password": password, "email": email },
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to a success page or perform other actions
+                    window.location.href = "/";
+                } else {
+                    // Display error message in the modal
+                    $("#error-message").text(response.error);
+                    $("#errorModal").modal("show");
+                }
+            },
+            error: function() {
+                console.log("Error making the AJAX request.");
+            }
+        });
+    }
+</script>
+
+{% endblock %}
