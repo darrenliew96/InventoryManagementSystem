@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+
+{% block main %}
+
+
+<script>
+    // JavaScript to handle the login form and error modal
+    $(document).ready(function() {
+        $("#login-form").submit(function(event) {
+            event.preventDefault();
+            login();
+        });
+        $("#modalErrorClose").click(function(){
+            $("#errorModal").modal("hide");
+        });
+    });
+
+    function login() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/form_request",
+            data: { "username": username, "password": password },
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to a success page or perform other actions
+                    window.location.href = "/";
+                } else {
+                    // Display error message in the modal
+                    $("#error-message").text(response.error);
+                    $("#errorModal").modal("show");
+                }
+            },
+            error: function() {
+                console.log("Error making the AJAX request.");
+            }
+        });
+    }
+</script>
+
+{% endblock %}

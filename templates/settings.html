@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<h4>User Settings</h4>
+<hr>
+<div class="container">
+    <form id="changepassword-form">
+        <h5>Change Password</h5>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="oldpassword" name="oldpassword" placeholder="Enter Old Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="newpassword" name="newpassword" placeholder="Enter New Password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="confirmpassword" name="confirmpassword" placeholder="Retype New Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+<hr>
+<div class="container">
+    <h5>Change Email</h5>
+    <p>Current Email: {{ useremail }}</p>
+    <form id="changeemail-form">
+        <div class="mb-3">
+            <input type="email" class="form-control mx-auto w-auto" id="newemail" name="newemail" placeholder="Enter New Email">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="currentpasswordemail" name="currentpasswordemail" placeholder="Enter Current Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+<hr>
+<div class="container">
+    <h5>Change Username</h5>
+    <p>Current Username: {{ username }}</p>
+    <form id="changeusername-form">
+        <div class="mb-3">
+            <input type="text" class="form-control mx-auto w-auto" id="newusername" name="newusername" placeholder="Enter New Username">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="currentpasswordusername" name="currentpasswordusername" placeholder="Enter Current Password" type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+
+
+<script>
+    // JavaScript to handle the login form and error modal
+    $(document).ready(function() {
+        $("#changepassword-form").submit(function(event) {
+            event.preventDefault();
+            changepassword();
+        });
+        $("#changeemail-form").submit(function(event) {
+            event.preventDefault();
+            changeemail();
+        });
+        $("#changeusername-form").submit(function(event) {
+            event.preventDefault();
+            changeusername();
+        });
+        $("#modalErrorClose").click(function(){
+            $("#errorModal").modal("hide");
+        });
+        $("#successModalClose").click(function(){
+            $("#successModal").modal("hide");
+        });
+    });
+
+    function changepassword() {
+        var oldpassword= $("#oldpassword").val();
+        var newpassword = $("#newpassword").val();
+        var confirmpassword = $("#confirmpassword").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/form_request_changepassword",
+            data: { "oldpassword": oldpassword, "newpassword": newpassword, "confirmpassword": confirmpassword },
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to a success page or perform other actions
+                    $("#success-message").text(response.success_text);
+                    $("#successModal").modal("show");
+                    setTimeout(
+                        function() {
+                        $('#successModal').modal('hide');
+                        }, 5000);
+                } else {
+                    // Display error message in the modal
+                    $("#error-message").text(response.error);
+                    $("#errorModal").modal("show");
+                }
+            },
+            error: function() {
+                console.log("Error making the AJAX request.");
+            }
+        });
+    }
+
+    function changeemail() {
+        var newemail = $("#newemail").val();
+        var currentpasswordemail = $("#currentpasswordemail").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/form_request_changeemail",
+            data: { "newemail": newemail, "currentpasswordemail": currentpasswordemail },
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to a success page or perform other actions
+                    $("#success-message").text(response.success_text);
+                    $("#successModal").modal("show");
+                    setTimeout(
+                        function() {
+                        $('#successModal').modal('hide');
+                        }, 5000);
+                } else {
+                    // Display error message in the modal
+                    $("#error-message").text(response.error);
+                    $("#errorModal").modal("show");
+                }
+            },
+            error: function() {
+                console.log("Error making the AJAX request.");
+            }
+        });
+    }
+    
+    function changeusername() {
+        var newusername= $("#newusername").val();
+        var currentpasswordusername = $("#currentpasswordusername").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/form_request_changeusername",
+            data: { "newusername": newusername, "currentpasswordusername": currentpasswordusername },
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to a success page or perform other actions
+                    $("#success-message").text(response.success_text);
+                    $("#successModal").modal("show");
+                    setTimeout(
+                        function() {
+                        $('#successModal').modal('hide');
+                        }, 5000);
+                } else {
+                    // Display error message in the modal
+                    $("#error-message").text(response.error);
+                    $("#errorModal").modal("show");
+                }
+            },
+            error: function() {
+                console.log("Error making the AJAX request.");
+            }
+        });
+    }
+</script>
+
+{% endblock %}
