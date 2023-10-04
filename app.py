@@ -3,6 +3,7 @@ from flask_session import Session
 
 from .extensions import db
 from .routes.user_page import user_page
+from .routes.user_settings import user_settings
 from .routes.api import api
 
 def create_app():
@@ -12,6 +13,7 @@ def create_app():
     #Configure Blueprints
     app.register_blueprint(user_page)
     app.register_blueprint(api)
+    app.register_blueprint(user_settings)
 
     if __name__ == "__main__":
         app.run(debug=True)

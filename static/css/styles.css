@@ -1,17 +1,51 @@
-.btn .btn-primary {
-    align-self: center;
+:root {
+    --offcanvas-width: 270px;
+    --topNavbarHeight: 56px;
 }
 
-.top-pad{
-    padding-top: 100px;
+
+.main{
+    display: flex !important;
+    top: var(--topNavbarHeight)!important;
 }
 
-.container{
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-bottom: 15px;
-    text-align: center;
-    width: 90%;
+.sidebar-nav {
+    width: var(--offcanvas-width) !important;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-link .right-icon {
+    display: inline-flex;
+}
+
+.sidebar-link[aria-expanded="true"] .right-icon {
+    transform: rotate(180deg);
+}
+
+@media (min-width:992px) {
+    body {
+        overflow:auto !important;
+    }
+    .offcanvas-backdrop.show{
+        display: none !important;
+    }
+
+    main.is-login {
+        margin-left: var(--offcanvas-width)!important;
+        padding-right: 270px;
+    }
+    .sidebar-nav {
+        transform: none !important;
+        visibility: visible !important;
+        top: var(--topNavbarHeight) !important;
+        height: calc(100% - var(--topNavbarHeight))!important;
+    }
+}
+
+.nav-divider {
+   margin: 0.5rem 0; 
 }

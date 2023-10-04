@@ -7,7 +7,7 @@ api = Blueprint('api', __name__)
 @api.route("/")
 @login_required
 def index():
-    return render_template("login.html")
+    return render_template("index.html")
 
 #Logout Route
 @api.route("/logout", methods=["GET"])
