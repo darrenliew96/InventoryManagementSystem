@@ -1,10 +1,11 @@
-from flask import Blueprint, Flask, request, render_template, session, redirect
+from flask import Blueprint, Flask
 from flask_session import Session
 
 from .extensions import db
 from .routes.user_page import user_page
 from .routes.user_settings import user_settings
 from .routes.api import api
+from .routes.stocks_mgmt import stocks_mgmt
 
 def create_app():
     #Configure Flask App
@@ -14,6 +15,7 @@ def create_app():
     app.register_blueprint(user_page)
     app.register_blueprint(api)
     app.register_blueprint(user_settings)
+    app.register_blueprint(stocks_mgmt)
 
     if __name__ == "__main__":
         app.run(debug=True)

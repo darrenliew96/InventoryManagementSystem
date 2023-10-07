@@ -3,11 +3,10 @@
     --topNavbarHeight: 56px;
 }
 
-
-.main{
-    display: flex !important;
-    top: var(--topNavbarHeight)!important;
+main{
+    margin-top: var(--topNavbarHeight)!important;
 }
+
 
 .sidebar-nav {
     width: var(--offcanvas-width) !important;
@@ -35,8 +34,8 @@
     }
 
     main.is-login {
-        margin-left: var(--offcanvas-width)!important;
-        padding-right: 270px;
+        padding-left: var(--offcanvas-width)!important;
+        padding-right: 0px;
     }
     .sidebar-nav {
         transform: none !important;
