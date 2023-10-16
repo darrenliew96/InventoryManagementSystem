@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy
 
-from ..models.user import Users
+from ..models.user import User
 from ..extensions import db
 
 user_page = Blueprint('user_page', __name__)
@@ -34,7 +34,7 @@ def form_request():
 
     # Query database for username using SQL alchemy ORM (Scalar one) TRY
     try:
-        user = db.session.execute(db.select(Users).filter_by(username=username)).scalar_one()
+        user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one()
     except NoResultFound:
         error_message = "Invalid Username!"
         return jsonify({'error': error_message})
@@ -55,11 +55,15 @@ def register():
     
 @user_page.route("/form_request_register", methods=["POST"])
 def form_request_register():
+    fullname = request.form.get("fullname")
     username = request.form.get('username')
     password = request.form.get('password')
     email = request.form.get('email')
 
     #Get input and disallow blank input
+    if not fullname:
+        error_message = "Name cannot be empty!"
+        return jsonify({'error': error_message})
     if not username:
         error_message = "Username cannot be empty!"
         return jsonify({'error': error_message})
@@ -71,10 +75,10 @@ def form_request_register():
         return jsonify({'error': error_message})
 
     #Query for username and email if its available, otherwise return error
-    if Users.query.filter_by(username=username).first() is not None:
+    if User.query.filter_by(username=username).first() is not None:
         error_message = "Username Exist!"
         return jsonify({'error': error_message})
-    elif Users.query.filter_by(email=email).first() is not None:
+    elif User.query.filter_by(email=email).first() is not None:
         error_message = "Email Exist!"
         return jsonify({'error': error_message})
     
@@ -82,7 +86,7 @@ def form_request_register():
     hashedPassword = generate_password_hash(password)
 
     #Insert user and password into SQL tables after checks
-    newuser = Users(username = username, password = hashedPassword, email = email)
+    newuser = User(fullname=fullname, username = username, password = hashedPassword, email = email)
 
     #Execute Query using ORM
     db.session.add(newuser)

@@ -8,6 +8,9 @@
 <div class="container top-pad">
     <form id="register-form">
         <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="fullname" name="fullname" placeholder="Full Name" type="text">
+        </div>
+        <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
         </div>
         <div class="mb-3">
@@ -34,6 +37,7 @@
     });
 
     function register() {
+        var fullname = $("#fullname").val()
         var username = $("#username").val();
         var password = $("#password").val();
         var email = $("#email").val();
@@ -41,7 +45,7 @@
         $.ajax({
             type: "POST",
             url: "/form_request_register",
-            data: { "username": username, "password": password, "email": email },
+            data: { "fullname": fullname, "username": username, "password": password, "email": email },
             success: function(response) {
                 if (response.success) {
                     // Redirect to a success page or perform other actions

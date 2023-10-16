@@ -3,21 +3,24 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_sqlalchemy import SQLAlchemy
+from ..helpers import login_required
 
-from ..models.user import Users
+from ..models.user import User
 from ..extensions import db
 
 user_settings = Blueprint('user_settings', __name__)
 
 #user settings page
 @user_settings.route("/settings")
+@login_required
 def settings():
-    user = db.session.execute(db.select(Users).filter_by(id=session["user_id"])).scalar_one()
+    user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one()
     print(user.email)
 
     return render_template("settings.html", useremail=user.email, username=user.username)
 
 @user_settings.route("/form_request_changeemail", methods=["POST"])
+@login_required
 def form_request_changeemail():
     newemail = request.form.get('newemail')
     confirmpasswordemail = request.form.get('currentpasswordemail')
@@ -31,7 +34,7 @@ def form_request_changeemail():
 
     #check if email already exist, pass exception is none was found, else return error message
     try:
-        email = db.session.execute(db.select(Users).filter_by(email=newemail)).scalar_one()
+        email = db.session.execute(db.select(User).filter_by(email=newemail)).scalar_one()
     
     except NoResultFound:
         pass
@@ -42,7 +45,7 @@ def form_request_changeemail():
     
         
     #query for username to be logged in
-    user = db.session.execute(db.select(Users).filter_by(id=session["user_id"])).scalar_one()
+    user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one()
 
     
     if check_password_hash(user.password ,confirmpasswordemail) is False:
@@ -57,6 +60,7 @@ def form_request_changeemail():
 
 
 @user_settings.route("/form_request_changepassword", methods=['POST'])
+@login_required
 def form_request_changepassword():
     oldpassword = request.form.get('oldpassword')
     newpassword = request.form.get('newpassword')
@@ -82,7 +86,7 @@ def form_request_changepassword():
     
     
     #Query DB ORM for that specific logged in ID
-    user = db.session.execute(db.select(Users).filter_by(id=session["user_id"])).scalar_one()
+    user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one()
     
     #Check for authenticity of current user password, if not return false and JSON data
     if check_password_hash(user.password, oldpassword) is False:
@@ -96,6 +100,7 @@ def form_request_changepassword():
         return jsonify({'success': True, 'success_text': "Password successfully changed!"})
 
 @user_settings.route("/form_request_changeusername", methods=["POST"])
+@login_required
 def form_request_changeusername():
     newusername = request.form.get("newusername")
     confirmpasswordusername = request.form.get("currentpasswordusername")
@@ -109,7 +114,7 @@ def form_request_changeusername():
 
      #check if username already exist, pass exception is none was found, else return error message
     try:
-        username = db.session.execute(db.select(Users).filter_by(username=newusername)).scalar_one()
+        username = db.session.execute(db.select(User).filter_by(username=newusername)).scalar_one()
     
     except NoResultFound:
         pass
@@ -120,7 +125,7 @@ def form_request_changeusername():
     
 
     #query for username to be logged in
-    user = db.session.execute(db.select(Users).filter_by(id=session["user_id"])).scalar_one()
+    user = db.session.execute(db.select(User).filter_by(id=session["user_id"])).scalar_one()
 
     
     if check_password_hash(user.password ,confirmpasswordusername) is False:

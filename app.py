@@ -1,11 +1,16 @@
-from flask import Blueprint, Flask
+from flask import Flask
 from flask_session import Session
+import os
+
 
 from .extensions import db
+
+#Routes
 from .routes.user_page import user_page
 from .routes.user_settings import user_settings
 from .routes.api import api
 from .routes.stocks_mgmt import stocks_mgmt
+from .routes.transactions_mgmt import transactions_mgmt
 
 def create_app():
     #Configure Flask App
@@ -16,6 +21,7 @@ def create_app():
     app.register_blueprint(api)
     app.register_blueprint(user_settings)
     app.register_blueprint(stocks_mgmt)
+    app.register_blueprint(transactions_mgmt)
 
     if __name__ == "__main__":
         app.run(debug=True)
@@ -23,6 +29,11 @@ def create_app():
     # Configure SQLALCHEMY
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ims.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+
+    #configure Secret Key for WTFORM CSRF protection
+    SECRET_KEY = os.urandom(32)
+    app.config['SECRET_KEY'] = SECRET_KEY
 
     db.init_app(app)
 

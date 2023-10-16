@@ -34,8 +34,8 @@ main{
     }
 
     main.is-login {
-        padding-left: var(--offcanvas-width)!important;
-        padding-right: 0px;
+        padding-left: calc(var(--offcanvas-width) + 10px) !important;
+        padding-right: 10px;
     }
     .sidebar-nav {
         transform: none !important;
@@ -47,4 +47,13 @@ main{
 
 .nav-divider {
    margin: 0.5rem 0; 
+}
+
+.stock-overview {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.add-stock-btn {
+    padding: 10px;
 }
