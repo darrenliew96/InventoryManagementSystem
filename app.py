@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_session import Session
+from flask_migrate import Migrate
+from flask_qrcode import QRcode
 import os
 
 
@@ -15,6 +17,7 @@ from .routes.transactions_mgmt import transactions_mgmt
 def create_app():
     #Configure Flask App
     app=Flask(__name__)
+    QRcode(app)
 
     #Configure Blueprints
     app.register_blueprint(user_page)
@@ -36,6 +39,8 @@ def create_app():
     app.config['SECRET_KEY'] = SECRET_KEY
 
     db.init_app(app)
+    migrate = Migrate(app, db)
+    
 
     with app.app_context():
         db.create_all()

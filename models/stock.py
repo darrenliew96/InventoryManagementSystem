@@ -9,6 +9,7 @@ class Stock(db.Model):
     SKU = db.Column(db.String)
     description = db.Column(db.String)
     barcode = db.Column(db.String)
+    qr_data = db.Column(db.String)
     regular_price = db.Column(db.Float)
     discount_price = db.Column(db.Float)
     quantity = db.Column(db.Integer)

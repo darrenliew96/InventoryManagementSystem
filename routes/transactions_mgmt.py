@@ -11,4 +11,5 @@ transactions_mgmt = Blueprint("transactions_mgmt", __name__)
 
 @transactions_mgmt.route("/transactions", methods=["GET"])
 def transactions():
-    return render_template("transactions.html")
+    transactions = Transaction.query.all()
+    return render_template("transactions.html", transactions=transactions)

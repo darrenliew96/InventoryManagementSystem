@@ -13,14 +13,18 @@ class Transaction(db.Model):
     price = db.Column(db.Float)
     agent_id = db.Column(db.Integer, db.ForeignKey("agent.id"))
     patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"))
+    qr_data = db.Column(db.String)
     is_deleted = db.Column(db.Boolean, default=False)
     created_at= db.Column(db.DateTime, default=datetime.utcnow)
     modified_at= db.Column(db.DateTime, default=datetime.utcnow)
     deleted_at= db.Column(db.DateTime)
 
+    product = db.relationship("Stock", foreign_keys=[product_id], backref="transactions")
+
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"))
+    qr_data = db.Column(db.String)
     order_status = db.Column(db.String)
     order_tracking_number = db.Column(db.String)
     order_delivered_at = db.Column(db.DateTime)

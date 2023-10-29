@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block main %}
+<script type="text/javascript" src="/static/js/qrcode.min.js"></script>
+
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
       <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Overview</button>
@@ -62,6 +64,16 @@
                           
                         </div>
                         <div class="row">
+                          <div class="col-6">
+                            {{addStocksForm.barcode.label}}
+                            {{addStocksForm.barcode(class="form-control ")}}
+                          </div>
+                          <div class="col-6">
+                            {{addStocksForm.qr_data.label}}
+                            {{addStocksForm.qr_data(class="form-control ")}}
+                          </div>
+                        </div>
+                        <div class="row">
                           <div class="col">
                             {{ addStocksForm.description.label }}
                             {{ addStocksForm.description(class="form-control ") }}
@@ -87,6 +99,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Brand</th>
+                        <th>Description</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         <th>Action</th>
@@ -98,16 +111,31 @@
                     <tr>
                         <td>{{stock.name}}</td>
                         <td>{{stock.brand}}</td>
+                        <td>{{stock.description}}</td>
                         <td>{{stock.quantity}}</td>
                         <td>{{stock.regular_price}}</td>
                         <td>
-                          <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#removeStocksModal">
+                          <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#generateQRModal{{stock.id}}" title="Generate QR">
+                            <span>
+                              <i class="bi bi-qr-code"></i>
+                            </span>
+                          </button>
+
+                          <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editStocksModal{{stock.id}}" title="Edit Stocks">
+                            <span>
+                              <i class="bi bi-pen"></i>
+                            </span>
+                          </button>
+
+                          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#removeStocksModal{{stock.id}}" title="Delete Stocks">
                             <span>
                               <i class="bi bi-x-circle"></i>
                             </span>
                           </button>
 
-                          <div class="modal fade" id="removeStocksModal" tabindex="-1" aria-labelledby="removeStocksModalLabel" aria-hidden="true">
+                          <!--MODAL POPUP LOGICS-->
+                          <!--Remove Stocks-->
+                          <div class="modal fade" id="removeStocksModal{{stock.id}}" tabindex="-1" aria-labelledby="removeStocksModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-sm">
                               <div class="modal-content">
                                 <div class="modal-header">
@@ -117,7 +145,7 @@
                                 <div class="modal-body">
                                   <div class="container">
                                     <div class="row">
-                                      <h6>Delete Item?</h6>
+                                      <h6>Delete {{stock.name}} Item?</h6>
                                     </div>
                                     <div>
                                       <form action="/form_request_removestock" method="POST">
@@ -127,6 +155,144 @@
                                         </button>
                                       </form>
                                     </div>
+                                  </div>
+                                </div>
+                              </div>        
+                                
+                            </div>
+                          </div>
+                          <!--MODAL POPUP LOGICS-->
+                          <!--Edit Stocks-->
+                          
+                          <div class="modal fade" id="editStocksModal{{stock.id}}" tabindex="-1" aria-labelledby="editStocksModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="editStocksModalLabel">Edit Stocks</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="container">
+                                    <div class="row">
+                                      <h6>Currently Editing {{stock.name}}</h6>
+                                    </div>
+                                    <div>
+                                      <form method="POST" action="/form_request_editstock">
+                                        {{ addStocksForm.csrf_token }}
+                                        <input type="hidden" id="editstockid" name="editstockid" value="{{stock.id}}">
+                                        <div class="container">
+                                          <div class="row">
+                                            <div class="col-4">
+                                              {{editStocksForm.name.label}}
+                                              {{editStocksForm.name(class="form-control", value=stock.name)}}
+                                            </div> 
+                                            <div class="col-3">
+                                              {{ editStocksForm.brand.label }}
+                                              {{ editStocksForm.brand(class="form-control", value=stock.brand)}}
+                                            </div>
+                                            <div class="col-2">
+                                              {{ editStocksForm.quantity.label }}
+                                              {{ editStocksForm.quantity(class="form-control", value=stock.quantity) }}
+                                            </div>
+                                            <div class="col-3">
+                                              {{ editStocksForm.regular_price.label }}
+                                              {{ editStocksForm.regular_price(class="form-control", value=stock.regular_price) }}
+                                            </div>
+                                            
+                                          </div>
+                                          <div class="row">
+                                            <div class="col-6">
+                                              {{editStocksForm.barcode.label}}
+                                              {{editStocksForm.barcode(class="form-control", value=stock.barcode) }}
+                                            </div>
+                                            <div class="col-6">
+                                              {{addStocksForm.qr_data.label}}
+                                              {{editStocksForm.qr_data(class="form-control", value=stock.qr_data) }}
+                                            </div>
+                                          </div>
+                                          <div class="row">
+                                            <div class="col">
+                                              {{ editStocksForm.description.label }}
+                                              {{ editStocksForm.description(class="form-control", value=stock.description) }}
+                                            </div>
+                                          </div class="row">
+                                            <div class="col add-stock-btn">
+                                              <button type=submit class="btn btn-primary">Apply Changes</button>
+                                            </div>
+                                        </div>
+                              
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>        
+                                
+                            </div>
+                          </div>
+
+                          <!--MODAL POPUP LOGICS-->
+                          <!--Generate QR for Stocks-->
+                          <div class="modal fade" id="generateQRModal{{stock.id}}" tabindex="-1" aria-labelledby="generateQRModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="generateQRModalLabel">QR for {{stock.name}}</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="container">
+                                    <div class="row ">
+                                      <div class="col-12 text-center">
+                                        {% if not stock.qr_data %}
+                                        <h3>Empty QR Data</h3>
+
+                                        {% else %}
+                                        <div><p>QR Data: {{stock.qr_data}}</p></div>
+                                        <!--QR code container-->
+                                        <div class="mx-auto qrcode-container" id="qrcode{{stock.id}}"></div>
+                                      </div>
+                                        {% endif %}
+                                    </div>
+                                      
+                                    
+
+                                    <!--Scripting for QR code-->
+                                    {% if stock.qr_data %}
+                                    <script type="text/javascript">
+                                       function generateQR(stockId, qrData) {
+                                              var qrcode = new QRCode(("qrcode"+ stockId), {
+                                              text: qrData,
+                                              width: 100,
+                                              height: 100,
+                                              colorDark : "#000000",
+                                              colorLight : "#ffffff",
+                                              correctLevel : QRCode.CorrectLevel.H,
+                                          });
+                                      
+                                          qrcode._htOption.width = '100%';
+                                          qrcode._htOption.height = '100%';
+                                          }
+                                      
+                                      //Function to clear QR code when modal closes
+                                      $(document).ready(function () {
+
+                                        $('#generateQRModal{{stock.id}}').on('show.bs.modal', function(){
+                                        var stockId = {{stock.id}}; // Get the stock ID from the button's data attribute
+                                        var qrData = "{{stock.qr_data}}"; // Get the QR data from the button's data attribute
+                                        generateQR(stockId, qrData); // Generate the QR code
+                                      });
+
+                                        $('#generateQRModal{{stock.id}}').on('hidden.bs.modal', function () {
+                                          // Get the stock ID from the modal's target
+                                          var stockId = $(this).attr('id').replace('generateQRModal', '');
+
+                                          // Clear the QR code container
+                                          document.getElementById("qrcode" + stockId).innerHTML = '';
+                                        });
+                                      });
+                                      
+                                      </script>
+                                      {% endif %}
                                   </div>
                                 </div>
                               </div>        
@@ -160,10 +326,11 @@
       autoWidth: false,
       responsive: true,
       columnDefs: [
-        { targets: [0, 1], width: '20%' }, // Set fixed width for columns 0 and 1
-        { targets: [2, 3], width: '5%' },
-        { targets: [4], width: '5%' }
-    ],
+        { targets: [0, 1], width: '10%' }, // Set fixed width for columns 0 and 1
+        { targets: [ 2 ], width: '20%' },
+        { targets: [3, 4], width: '10%' },
+        { targets: [5], width: '15%' }
+     ],
     });
 
     } );

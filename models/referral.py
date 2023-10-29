@@ -7,6 +7,7 @@ class Referral(db.Model):
     url = db.Column(db.String)
     path = db.Column(db)
     type = db.Column(db.String)
+    qr_data = db.Column(db.String)
     is_deleted = db.Column(db.Boolean, default=False)
     created_at= db.Column(db.DateTime, default=datetime.utcnow)
     modified_at= db.Column(db.DateTime, default=datetime.utcnow)

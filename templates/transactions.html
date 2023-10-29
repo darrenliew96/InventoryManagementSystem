@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Transactions
+{% endblock %}
+
+{% block main %}
+<div>
+  <table id="transactionTable" class="display">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Date</th>
+        <th>Type</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for transaction in transactions %}
+      <tr>
+        <td>{{transaction.product.name}}</td>
+        <td>{{transaction.quantity}}</td>
+        <td>{{transaction.price}}</td>
+        <td>{{transaction.created_at.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+        <td>{{transaction.type}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+  <script>
+    $(document).ready(function () {
+    var table = $('#transactionTable').DataTable({
+      autoWidth: false,
+      responsive: true,
+      "order": [[3, 'desc']]
+    });
+
+    } );
+  </script>
+
+{% endblock %}
